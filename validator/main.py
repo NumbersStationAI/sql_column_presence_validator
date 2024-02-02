@@ -1,8 +1,4 @@
-import re
-import string
-from typing import Any, Callable, Dict, Optional
-
-import rstr
+from typing import Any, Callable, Dict, List, Optional
 
 from guardrails.validator_base import (
     FailResult,
@@ -13,59 +9,41 @@ from guardrails.validator_base import (
 )
 
 
-@register_validator(name="guardrails/regex_match", data_type="string")
-class RegexMatch(Validator):
-    """Validates that a value matches a regular expression.
+@register_validator(name="guardrails/sql_column_presence", data_type="string")
+class SqlColumnPresence(Validator):
+    """Validates that all columns in the SQL query are present in the schema.
 
     **Key Properties**
 
     | Property                      | Description                       |
     | ----------------------------- | --------------------------------- |
-    | Name for `format` attribute   | `regex_match`                     |
+    | Name for `format` attribute   | `sql-column-presence`             |
     | Supported data types          | `string`                          |
-    | Programmatic fix              | Generate a string that matches the regular expression |
+    | Programmatic fix              | None                              |
 
     Args:
-        regex: Str regex pattern
-        match_type: Str in {"search", "fullmatch"} for a regex search or full-match option
-    """  # noqa
+        cols: The list of valid columns.
+    """
 
-    def __init__(
-        self,
-        regex: str,
-        match_type: Optional[str] = None,
-        on_fail: Optional[Callable] = None,
-    ):
-        # todo -> something forces this to be passed as kwargs and therefore xml-ized.
-        # match_types = ["fullmatch", "search"]
-
-        if match_type is None:
-            match_type = "fullmatch"
-        assert match_type in [
-            "fullmatch",
-            "search",
-        ], 'match_type must be in ["fullmatch", "search"]'
-
-        super().__init__(on_fail=on_fail, match_type=match_type, regex=regex)
-        self._regex = regex
-        self._match_type = match_type
+    def __init__(self, cols: List[str], on_fail: Optional[Callable] = None):
+        super().__init__(on_fail=on_fail, cols=cols)
+        self._cols = set(cols)
 
     def validate(self, value: Any, metadata: Dict) -> ValidationResult:
-        p = re.compile(self._regex)
-        """Validates that value matches the provided regular expression."""
-        # Pad matching string on either side for fix
-        # example if we are performing a regex search
-        str_padding = (
-            "" if self._match_type == "fullmatch" else rstr.rstr(string.ascii_lowercase)
-        )
-        self._fix_str = str_padding + rstr.xeger(self._regex) + str_padding
+        from sqlglot import exp, parse
+        expressions = parse(value)
+        cols = set()
+        for expression in expressions:
+            if expression is None:
+                continue
+            for col in expression.find_all(exp.Column):
+                cols.add(col.alias_or_name)
 
-        if not getattr(p, self._match_type)(value):
+        diff = cols.difference(self._cols)
+        if len(diff) > 0:
             return FailResult(
-                error_message=f"Result must match {self._regex}",
-                fix_value=self._fix_str,
+                error_message=f"Columns [{', '.join(diff)}] "
+                f"not in [{', '.join(self._cols)}]",
             )
-        return PassResult()
 
-    def to_prompt(self, with_keywords: bool = True) -> str:
-        return "results should match " + self._regex
+        return PassResult()

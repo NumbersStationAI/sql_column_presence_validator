@@ -1,15 +1,15 @@
 [project]
-name = "regexmatch"
+name = "sqlcolumnpresence"
 version = "0.0.0"
-description = "Template repo for Guardrails Hub validators."
+description = "Validate if SQL columns match the schema."
 authors = [
-    {name = "Guardrails AI", email = "contact@guardrailsai.com"}
+    {name = "NumbersStation AI", email = "laurel.orr@numbersstation.ai"}
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
 requires-python = ">= 3.8"
 dependencies = [
-    "rstr",
+    "sqlglot",
     "guardrails-ai>=0.3.2",
     "pydantic>=2.4.2"
 ]
