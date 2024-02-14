@@ -9,7 +9,7 @@ from guardrails.validator_base import (
 )
 
 
-@register_validator(name="guardrails/sql_column_presence", data_type="string")
+@register_validator(name="numbersstation/sql_column_presence", data_type="string")
 class SqlColumnPresence(Validator):
     """Validates that all columns in the SQL query are present in the schema.
 
