@@ -29,7 +29,7 @@ class SqlColumnPresence(Validator):
         super().__init__(on_fail=on_fail, cols=cols)
         self._cols = set(cols)
 
-    def validate(self, value: Any, metadata: Dict) -> ValidationResult:
+    def validate(self, value: Any, metadata: Dict = {}) -> ValidationResult:
         from sqlglot import exp, parse
         expressions = parse(value)
         cols = set()
