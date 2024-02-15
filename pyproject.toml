@@ -1,5 +1,5 @@
 [project]
-name = "sqlcolumnpresence"
+name = "sql_column_presence"
 version = "0.0.0"
 description = "Validate if SQL columns match the schema."
 authors = [
@@ -7,9 +7,8 @@ authors = [
 ]
 license = {file = "LICENSE"}
 readme = "README.md"
-requires-python = ">= 3.8"
+requires-python = ">= 3.8.1"
 dependencies = [
     "sqlglot",
     "guardrails-ai>=0.3.2",
-    "pydantic>=2.4.2"
 ]
