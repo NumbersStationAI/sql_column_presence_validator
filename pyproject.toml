@@ -12,3 +12,20 @@ dependencies = [
     "sqlglot",
     "guardrails-ai>=0.4.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pyright",
+    "pytest",
+    "ruff"
+] 
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-rP"
+testpaths = [
+    "tests"
+]
+
+[tool.pyright]
+include = ["validator"]

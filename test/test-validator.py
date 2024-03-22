@@ -10,6 +10,7 @@ class ValidatorTestObject(BaseModel):
         ]
     )
 
+
 TEST_OUTPUT = """{
   "test_val": "SELECT name, AVG(weight) FROM animals GROUP BY name"
 }
@@ -27,7 +28,7 @@ TEST_FAIL_OUTPUT = """{
 """
 
 try:
-  raw_output, guarded_output, *rest = guard.parse(TEST_FAIL_OUTPUT)
-  print ("Failed to fail validation when it was supposed to")
-except (Exception):
-  print ('Successfully failed validation when it was supposed to')
+    raw_output, guarded_output, *rest = guard.parse(TEST_FAIL_OUTPUT)
+    print("Failed to fail validation when it was supposed to")
+except Exception:
+    print("Successfully failed validation when it was supposed to")
