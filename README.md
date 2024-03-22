@@ -15,8 +15,8 @@ Checks that schema columns are present in a SQL query.
 ## Requirements
 
 * Dependencies:
-	- guardrails-ai>=0.4.0
-    - sqlglot
+	- `guardrails-ai>=0.4.0`
+    - `sqlglot`
 
 # Installation
 
