@@ -31,6 +31,7 @@ class SqlColumnPresence(Validator):
 
     def validate(self, value: Any, metadata: Dict = {}) -> ValidationResult:
         from sqlglot import exp, parse
+
         expressions = parse(value)
         cols = set()
         for expression in expressions:
